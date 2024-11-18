@@ -1,25 +1,3 @@
-# aquecimento
-def multiplos23():
-    res = 0
-    for i in range (1,10001):
-        if i % 23 == 0:
-            res = res + 1
-    return res
-
-def multiplos23_1():
-    res = 0
-    for i in range (23, 10001, 23):
-        res = res +1
-    return res
-
-def multiplos23_2():
-    i=23
-    res = 0
-    while i<=10000:
-        i = i + 23
-        res = res + 1
-    return res
-
 # 1)
 # TabMeteo = [(Data,TempMin,TempMax,Precipitacao)]
     # Data = (Int,Int,Int)
@@ -49,6 +27,8 @@ def guardaTabMeteo(t, fnome):
     file.close()
     return
 
+ficheiro = guardaTabMeteo(tabMeteo1, "meteorologia.txt")
+
 # 1c)
 def carregaTabMeteo(fnome):
     res = []
@@ -76,7 +56,7 @@ def minMin(tabMeteo):
     return minima
 
 # 1e)
-def amplTerm(tabMeteo):
+def amgraferm(tabMeteo):
     res = []
     for i in tabMeteo:
         amplitude = i[1] - i[2]
@@ -122,7 +102,7 @@ def maxPeriodoCalor(tabMeteo, p):
 maxPeriodoCalor(tabMeteo1, 1)
 
 # 1i)
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as graf
 
 def grafTabMeteo(t):
     # [expressao for elem in lista]
@@ -131,20 +111,20 @@ def grafTabMeteo(t):
     temps_max = [max for data, min, max, *_ in t]
     precs = [prec for data, min, max, prec in t]
 
-    plt.plot(datas,temps_min, label ="Temperatura Mínima", color = "b", marker = "o")
-    plt.plot(datas,temps_max, label ="Temperatura Máxima", color = "r", marker = "o")
-    plt.xlabel("Data")
-    plt.ylabel("Temperatura ºC")
-    plt.title("Temperatura mínima")
-    plt.legend()
-    plt.show()
+    graf.plot(datas,temps_min, label ="Temperatura Mínima", color = "b", marker = "o")
+    graf.plot(datas,temps_max, label ="Temperatura Máxima", color = "r", marker = "o")
+    graf.xlabel("Data")
+    graf.ylabel("Temperatura ºC")
+    graf.title("Temperatura mínima")
+    graf.legend()
+    graf.show() # mostrar o gráfico
 
-    plt.bar(datas, precs, label = "Precipitação", color ="c")
-    plt.xlabel("Data")
-    plt.ylabel("Precipitação mm")
-    plt.title("Precipitação")
-    plt.legend()
-    plt.show
+    graf.bar(datas, precs, label = "Precipitação", color ="c")
+    graf.xlabel("Data")
+    graf.ylabel("Precipitação mm")
+    graf.title("Precipitação")
+    graf.legend()
+    graf.show() # mostrar o gráfico
     return
 
 grafTabMeteo(tabMeteo1)
@@ -186,7 +166,7 @@ while cond == True:
         elif op == "4":
             print(f' A temperatura mínima mais baixa foi {minMin(tabMeteo1)}.')
         elif op == "5":
-            print(f'A amplitude térmica em cada dia foi {amplTerm(tabMeteo1)}')
+            print(f'A amplitude térmica em cada dia foi {amgraferm(tabMeteo1)}')
         elif op == "6":
             print(f' O dia com precipitação máxima foi {maxChuva(tabMeteo1)}.')
         elif op == "7":
@@ -202,112 +182,4 @@ while cond == True:
         else:
             print(f'A opção {op} não é valida.')
             op = input("introduza uma opção")
-print("Obrigado e volte sempre bestie!")
-
-def medias(tabMeteo):
-    res = []
-    for i in tabMeteo:
-        media = (i[1] + i[2])/2
-        data = i[0]
-        res.append((data,media))
-    return res
-
-def guardaTabMeteo(t, fnome):
-    file = open(fnome, "w")
-    for data,min,max,prec in t:
-        ano, mes, dia = data
-        data = f'{ano}-{mes}-{dia}'
-        registo = f'{data}/{min}/{max}/{prec}\n'
-        file.write(registo)
-
-    file.close()
-    return
-
-def carregaTabMeteo(fnome):
-    res = []
-    file = open(fnome, "r")
-    for line in file:
-        line = line[:-1]
-        #line = line.strip()
-        campos = line.split("/")
-        data, min, max, prec = campos
-        ano, mes, dia = data.split("-")
-        # ou campos[0] = campos[0].split("-")
-        tuplo = ((int(ano),int(mes),int(dia)), float(min), float(max), float(prec))
-        res.append(tuplo)
-    file.close()
-    return res
-
-def minMin(tabMeteo):
-    minima = tabMeteo1[0][1]
-    for dia in tabMeteo1:
-        if dia[1] < minima:
-            minima = dia[1]
-    return minima
-
-def amplTerm(tabMeteo):
-    res = []
-    for i in tabMeteo:
-        amplitude = i[1] - i[2]
-        data = i[0]
-        res.append((data,amplitude))
-    return res 
-
-def maxChuva(tabMeteo):
-    max_prec = tabMeteo[0][3]
-    max_data = tabMeteo[0][0]
-    for dia in tabMeteo:
-        if dia[3] > max_prec and dia[0] != max_data:
-            max_prec = dia[3]
-            max_data = dia[0]
-    return (max_data, max_prec)
-
-def diasChuvosos(tabMeteo, p):
-    res = []
-    for data, max, min, prec in tabMeteo:
-        if prec > p:
-            res.append((data, prec))
-    return res
-
-def maxPeriodoCalor(tabMeteo, p):
-    consecutivos = 0
-    consecutivos_global = 0
-    for dias in tabMeteo:
-        if dias[3] < p:
-            consecutivos = consecutivos + 1
-        else:
-            if consecutivos_global < consecutivos:
-                consecutivos_global = consecutivos
-            consecutivos = 0
-
-    if consecutivos_global < consecutivos:
-        consecutivos_global = consecutivos
-
-    return consecutivos_global
-
-import matplotlib.pyplot as plt
-
-def grafTabMeteo(t):
-    # [expressao for elem in lista]
-    datas = [f'{data[0]}-{data[1]}-{data[2]}' for data, *_ in t]
-    temps_min = [min for data, min, *_ in t]
-    temps_max = [max for data, min, max, *_ in t]
-    precs = [prec for data, min, max, prec in t]
-
-    plt.plot(datas,temps_min, label ="Temperatura Mínima", color = "b", marker = "o")
-    plt.plot(datas,temps_max, label ="Temperatura Máxima", color = "r", marker = "o")
-    plt.xlabel("Data")
-    plt.ylabel("Temperatura ºC")
-    plt.title("Temperatura mínima")
-    plt.legend()
-    plt.show()
-
-    plt.bar(datas, precs, label = "Precipitação", color ="c")
-    plt.xlabel("Data")
-    plt.ylabel("Precipitação mm")
-    plt.title("Precipitação")
-    plt.legend()
-    plt.show
-    return
-
-
+print("Obrigado!")
